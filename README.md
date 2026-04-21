@@ -53,7 +53,7 @@ There's a gap between those two. NicheFind tries to fill it with something small
 
 - **Guided questionnaire.** Five quick steps using chips and preset cards, no intimidating blank text box.
 - **DeepSeek-powered suggestions.** Structured output with reasoning, not wall-of-text advice.
-- **Real-data grounding.** A second API attaches real metrics (YouTube result counts, recent upload frequency) to each niche, so the output isn't purely LLM fluff.
+- **Real-data grounding.** A second API attaches real metrics (Reddit post counts, top subreddit, aggregated upvotes) to each niche, so the output isn't purely LLM fluff.
 - **Regenerate and Refine.** Don't like the first batch? Get a fresh set, or steer them with presets like "more beginner-friendly" or "physical products only".
 - **Native device integration.** Share, open in browser, copy, and offline-aware, via Flutter plugins.
 - **Zero database by design.** No accounts, no tracking, no persistence beyond optional local form caching.
@@ -95,7 +95,7 @@ There's a gap between those two. NicheFind tries to fill it with something small
 | Formatting | `flutter_markdown` | Renders any markdown that slips through from DeepSeek |
 | Native features | `share_plus`, `url_launcher`, `shared_preferences`, `connectivity_plus` | Share, open on YouTube, persist form state, detect offline |
 | AI | DeepSeek API (`deepseek-chat`) | Cheaper per token than OpenAI, comparable quality on structured prompts |
-| Secondary data | YouTube Data API v3 | Real result counts and upload frequency as a demand signal |
+| Secondary data | Reddit public JSON API | Free, no key required — measures community interest as a demand signal |
 
 <br/>
 
@@ -106,7 +106,7 @@ There's a gap between those two. NicheFind tries to fill it with something small
 - Flutter 3.x on the stable channel
 - Xcode (for iOS) or Android Studio
 - A DeepSeek API key from [platform.deepseek.com](https://platform.deepseek.com)
-- A YouTube Data API v3 key from Google Cloud Console
+- No key required for the secondary Reddit API — it uses public JSON endpoints
 
 Verify your Flutter install with `flutter doctor -v` before anything else.
 
@@ -123,28 +123,24 @@ flutter pub get
 API keys are injected at build time via `--dart-define`, never committed to the repo.
 
 ```bash
-flutter run \
-  --dart-define=DEEPSEEK_API_KEY=sk-your-deepseek-key \
-  --dart-define=YOUTUBE_API_KEY=AIzaSy-your-youtube-key
+flutter run --dart-define=DEEPSEEK_API_KEY=sk-your-deepseek-key
 ```
 
-If you want to avoid pasting the keys every time, keep a gitignored `run.sh`:
+If you want to avoid pasting the key every time, keep a gitignored `run.sh`:
 
 ```bash
 #!/usr/bin/env bash
-flutter run \
-  --dart-define=DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-  --dart-define=YOUTUBE_API_KEY="$YOUTUBE_API_KEY"
+flutter run --dart-define=DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY"
 ```
 
 ### Build a release
 
 ```bash
 # Android
-flutter build apk --release --dart-define=DEEPSEEK_API_KEY=... --dart-define=YOUTUBE_API_KEY=...
+flutter build apk --release --dart-define=DEEPSEEK_API_KEY=...
 
 # iOS
-flutter build ipa --release --dart-define=DEEPSEEK_API_KEY=... --dart-define=YOUTUBE_API_KEY=...
+flutter build ipa --release --dart-define=DEEPSEEK_API_KEY=...
 ```
 
 ### Run tests
@@ -174,7 +170,7 @@ lib/
 ├── services/
 │   ├── deepseek_service.dart       HTTP client and response parser
 │   ├── prompt_builder.dart         Turns form data into a structured prompt
-│   └── youtube_service.dart        Secondary data source
+│   └── reddit_service.dart         Secondary data source (Reddit public JSON)
 │
 ├── screens/
 │   ├── welcome_screen.dart
@@ -210,7 +206,7 @@ Full architectural notes, including the data flow diagram and the error model, l
 2. On Generate, `PromptBuilder` assembles a system + user message pair that includes the user's interests, goal, skill level, time commitment, and any free-text notes.
 3. `DeepSeekService` sends the request over HTTPS with a 30-second timeout.
 4. A tolerant parser handles three cases: clean JSON, fenced JSON, or a markdown fallback. On total failure the UI shows a retry state rather than surfacing raw errors.
-5. Each parsed niche is enriched with a real metric from YouTube Data API. If the YouTube call fails, the niche still renders with a placeholder metric. The secondary API never blocks the main flow.
+5. Each parsed niche is enriched with a real metric from the Reddit public JSON API (post count, top subreddit). If the Reddit call fails, the niche still renders with a placeholder metric. The secondary API never blocks the main flow.
 6. Results render as scrollable cards with Regenerate and Refine actions.
 
 Prompt design notes and the iteration log live under [Prompt Engineering](../../wiki/Prompt-Engineering).
@@ -225,7 +221,7 @@ A few choices that will probably get asked about:
 
 **No database.** Every session is a fresh API call. The only local persistence is an optional cache of the last-used form answers via `shared_preferences`, so a crash or reopen doesn't wipe progress. No accounts, no analytics, no telemetry.
 
-**Two APIs, not one.** The original proposal leaned on DeepSeek alone. Professor feedback noted that a single API wasn't enough, and the fix genuinely makes the product better: LLM output is grounded in real YouTube data rather than presented as fact on its own authority.
+**Two APIs, not one.** The original proposal leaned on DeepSeek alone. Professor feedback noted that a single API wasn't enough, and the fix genuinely makes the product better: LLM output is grounded in real Reddit community data rather than presented as fact on its own authority. Reddit was chosen over YouTube Data API because YouTube now requires billing activation on Google Cloud, which isn't appropriate for a single-user class demo. Reddit's public JSON endpoints require no key and measure actual community interest, which is a direct demand signal for niche research.
 
 **Flutter plugins over generic web wrappers.** The project brief mentioned Cordova plugins. Cordova is a different framework (hybrid web apps). In Flutter the equivalent concept is Flutter plugins from pub.dev, and the app uses four of them: `share_plus`, `url_launcher`, `shared_preferences`, and `connectivity_plus`. Each is tied to an actual user-facing feature, not just imported for the checkbox.
 
