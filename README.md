@@ -31,6 +31,8 @@ NicheFind is a Flutter mobile app that helps people escape the "staring at a bla
 The app isn't trying to replace market research or write a business plan. It's trying to cut the "where do I even start" phase from weeks to about a minute.
 
 > Built as the Project Four submission for ISTE 252 (Web and Mobile Computing) at RIT Croatia, Spring 2026.
+>
+> Competitive landscape write-up: [`NicheFind/docs/competitive-analysis.md`](./NicheFind/docs/competitive-analysis.md)
 
 <br/>
 

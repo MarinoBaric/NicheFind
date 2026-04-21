@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="500" viewBox="0 0 1400 500" role="img" aria-labelledby="title desc">
+  <title id="title">Keyword platform research flow snapshot</title>
+  <desc id="desc">Workflow from opening keyword tool to exporting shortlist.</desc>
+  <rect width="1400" height="500" fill="#f6f8ff"/>
+  <text x="40" y="62" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#111">Competitor flow snapshot: Semrush/Ahrefs-style keyword workflow</text>
+
+  <g font-family="Arial, sans-serif" font-size="24" fill="#111" text-anchor="middle">
+    <rect x="40" y="140" width="230" height="170" rx="20" fill="#e3ecff" stroke="#222" stroke-width="2"/>
+    <text x="155" y="220">Open keyword</text>
+    <text x="155" y="250">tool</text>
+
+    <rect x="320" y="140" width="230" height="170" rx="20" fill="#e3ecff" stroke="#222" stroke-width="2"/>
+    <text x="435" y="208">Enter seed</text>
+    <text x="435" y="238">keyword</text>
+
+    <rect x="600" y="140" width="230" height="170" rx="20" fill="#e3ecff" stroke="#222" stroke-width="2"/>
+    <text x="715" y="208">Review volume</text>
+    <text x="715" y="238">+ difficulty</text>
+
+    <rect x="880" y="140" width="230" height="170" rx="20" fill="#e3ecff" stroke="#222" stroke-width="2"/>
+    <text x="995" y="208">Apply filters</text>
+    <text x="995" y="238">and compare</text>
+
+    <rect x="1160" y="140" width="200" height="170" rx="20" fill="#e3ecff" stroke="#222" stroke-width="2"/>
+    <text x="1260" y="208">Export</text>
+    <text x="1260" y="238">shortlist</text>
+  </g>
+
+  <g stroke="#333" stroke-width="4" fill="#333">
+    <line x1="270" y1="225" x2="310" y2="225"/>
+    <polygon points="310,225 295,215 295,235"/>
+
+    <line x1="550" y1="225" x2="590" y2="225"/>
+    <polygon points="590,225 575,215 575,235"/>
+
+    <line x1="830" y1="225" x2="870" y2="225"/>
+    <polygon points="870,225 855,215 855,235"/>
+
+    <line x1="1110" y1="225" x2="1150" y2="225"/>
+    <polygon points="1150,225 1135,215 1135,235"/>
+  </g>
+
+  <text x="40" y="460" font-family="Arial, sans-serif" font-size="20" fill="#4b5563">Screenshot-style comparison diagram included for coursework competitive analysis.</text>
+</svg>
