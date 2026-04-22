@@ -9,6 +9,7 @@ import 'screens/time_commitment_screen.dart';
 import 'screens/extra_notes_screen.dart';
 import 'screens/results_screen.dart';
 import 'screens/loading_screen.dart';
+import 'widgets/connectivity_banner.dart';
 
 void main() {
   // TODO: Run the app wrapped with ChangeNotifierProvider
