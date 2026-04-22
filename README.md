@@ -93,7 +93,7 @@ There's a gap between those two. NicheFind tries to fill it with something small
 | State | `provider` | Small state surface, no need for heavier tooling |
 | HTTP | `http` | Simple, enough for two API calls |
 | Formatting | `flutter_markdown` | Renders any markdown that slips through from DeepSeek |
-| Native features | `share_plus`, `url_launcher`, `shared_preferences`, `connectivity_plus` | Share, open on YouTube, persist form state, detect offline |
+| Native features | `share_plus`, `url_launcher`, `connectivity_plus` | Share a niche as text, open a Google search for it, detect offline state |
 | AI | DeepSeek API (`deepseek-chat`) | Cheaper per token than OpenAI, comparable quality on structured prompts |
 | Secondary data | Reddit public JSON API | Free, no key required — measures community interest as a demand signal |
 
@@ -109,6 +109,14 @@ There's a gap between those two. NicheFind tries to fill it with something small
 - No key required for the secondary Reddit API — it uses public JSON endpoints
 
 Verify your Flutter install with `flutter doctor -v` before anything else.
+
+### Platform permissions
+
+None of the three native-capability plugins require extra iOS permissions:
+
+- `share_plus` — uses the standard iOS share sheet, no Info.plist changes.
+- `url_launcher` — only opens `https://` URLs, which are allowed by default under App Transport Security. No `LSApplicationQueriesSchemes` entry needed.
+- `connectivity_plus` — no permissions on iOS; on Android the plugin auto-adds `ACCESS_NETWORK_STATE` via its own manifest.
 
 ### Clone and install
 
@@ -223,7 +231,7 @@ A few choices that will probably get asked about:
 
 **Two APIs, not one.** The original proposal leaned on DeepSeek alone. Professor feedback noted that a single API wasn't enough, and the fix genuinely makes the product better: LLM output is grounded in real Reddit community data rather than presented as fact on its own authority. Reddit was chosen over YouTube Data API because YouTube now requires billing activation on Google Cloud, which isn't appropriate for a single-user class demo. Reddit's public JSON endpoints require no key and measure actual community interest, which is a direct demand signal for niche research.
 
-**Flutter plugins over generic web wrappers.** The project brief mentioned Cordova plugins. Cordova is a different framework (hybrid web apps). In Flutter the equivalent concept is Flutter plugins from pub.dev, and the app uses four of them: `share_plus`, `url_launcher`, `shared_preferences`, and `connectivity_plus`. Each is tied to an actual user-facing feature, not just imported for the checkbox.
+**Flutter plugins over generic web wrappers.** The project brief mentioned Cordova plugins. Cordova is a different framework (hybrid web apps). In Flutter the equivalent concept is Flutter plugins from pub.dev, and the app uses three of them: `share_plus` for sharing a niche suggestion as text, `url_launcher` for opening a Google search on the niche title, and `connectivity_plus` for detecting offline state and showing a banner instead of a raw network error. Each is tied to an actual user-facing feature, not just imported for the checkbox.
 
 **Only five suggestions.** Enough to pick from, few enough to actually read. Long lists of LLM-generated ideas tend to let the generic ones drag down the good ones.
 

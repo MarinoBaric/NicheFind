@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/niche_suggestion.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NicheCard extends StatefulWidget {
   final NicheSuggestion suggestion;
@@ -108,10 +110,58 @@ class _NicheCardState extends State<NicheCard> {
                       .toList(),
                 ),
               ),
+            const SizedBox(height: 8),
+            const Divider(height: 1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Search on Google',
+                  icon: const Icon(Icons.search, size: 20),
+                  onPressed: () => _openSearch(s),
+                ),
+                IconButton(
+                  tooltip: 'Share',
+                  icon: const Icon(Icons.share_outlined, size: 20),
+                  onPressed: () => _shareSuggestion(s),
+                )
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _openSearch(NicheSuggestion s) async {
+    final query = Uri.encodeQueryComponent(s.title);
+    final url = Uri.parse('https://www.google.com/search?q=$query');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _shareSuggestion(NicheSuggestion s) async {
+    final buffer = StringBuffer()
+      ..writeln(s.title)
+      ..writeln()
+      ..writeln(s.description)
+      ..writeln()
+      ..writeln('Demand: ${s.demand}  ·  Competition: ${s.competition}');
+
+    if (s.firstSteps.isNotEmpty) {
+      buffer
+        ..writeln()
+        ..writeln('First steps:');
+      for (final step in s.firstSteps) {
+        buffer.writeln('• $step');
+      }
+    }
+    buffer
+      ..writeln()
+      ..writeln('Found with NicheFind');
+    await Share.share(buffer.toString(), subject: s.title);
   }
 
   String _buildMetricsLabel(NicheMetrics? m) {
