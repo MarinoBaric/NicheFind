@@ -42,11 +42,44 @@ class NicheSuggestion {
 
   factory NicheSuggestion.fromJson(Map<String, dynamic> json) {
     return NicheSuggestion(
-      title: json['title'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      demand: json['demand'] as String? ?? '',
-      competition: json['competition'] as String? ?? '',
-      firstSteps: (json['firstSteps'] as List?)?.cast<String>() ?? const [],
+      title: _readString(json, ['title', 'name']) ?? 'Untitled niche',
+      description: _readString(json, ['description', 'summary', 'desc']) ?? '',
+      demand: _readString(json, ['demand', 'demand_level']) ?? '-',
+      competition:
+          _readString(json, ['competition', 'competition_level']) ?? '-',
+      firstSteps:
+          _readStringList(json, ['firstSteps', 'first_steps', 'steps']),
     );
+  }
+
+  static String? _readString(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is String && value.trim().isNotEmpty) return value.trim();
+    }
+    return null;
+  }
+
+  static List<String> _readStringList(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is List) {
+        return value
+            .map((e) => e?.toString().trim() ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+      if (value is String && value.trim().isNotEmpty) {
+        return value
+            .split(RegExp(r'[\n;]'))
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+    }
+    return const [];
   }
 }

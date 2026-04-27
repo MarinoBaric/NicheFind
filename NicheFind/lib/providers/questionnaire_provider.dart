@@ -4,6 +4,10 @@ import '../models/niche_suggestion.dart';
 import '../services/deepseek_service.dart';
 
 class QuestionnaireProvider extends ChangeNotifier {
+  QuestionnaireProvider({DeepSeekService? service})
+      : _service = service ?? DeepSeekService();
+
+  final DeepSeekService _service;
   final QuestionnaireData _data = QuestionnaireData();
   List<NicheSuggestion> _suggestions = [];
   bool _isLoading = false;
@@ -15,47 +19,83 @@ class QuestionnaireProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   void setInterests(List<String> interests) {
-    // TODO: Update interests and notify listeners
-    throw UnimplementedError();
+    _data.interests = List.of(interests);
+    notifyListeners();
   }
 
   void setGoal(String goal) {
-    // TODO: Update goal and notify listeners
-    throw UnimplementedError();
+    _data.goal = goal;
+    notifyListeners();
   }
 
   void setSkillLevel(String level) {
-    // TODO: Update skill level and notify listeners
-    throw UnimplementedError();
+    _data.skillLevel = level;
+    notifyListeners();
   }
 
   void setTimeCommitment(String time) {
-    // TODO: Update time commitment and notify listeners
-    throw UnimplementedError();
+    _data.timeCommitment = time;
+    notifyListeners();
   }
 
   void setAdditionalNotes(String notes) {
-    // TODO: Update additional notes and notify listeners
-    throw UnimplementedError();
+    _data.additionalNotes = notes;
+    notifyListeners();
   }
 
   Future<void> generateNiches() async {
-    // TODO: Call DeepSeekService, update suggestions/loading/error state
-    throw UnimplementedError();
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _suggestions = await _service.generateNiches(_data);
+    } catch (e) {
+      _errorMessage = e.toString();
+      _suggestions = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> regenerateNiches() async {
-    // TODO: Regenerate with same data
-    throw UnimplementedError();
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _suggestions = await _service.regenerateNiches(_data);
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> refineNiches(String refinement) async {
-    // TODO: Refine existing results with user feedback
-    throw UnimplementedError();
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _suggestions = await _service.refineNiches(_data, refinement);
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   void reset() {
-    // TODO: Clear all data and suggestions for a fresh start
-    throw UnimplementedError();
+    _data
+      ..interests = const []
+      ..goal = ''
+      ..skillLevel = ''
+      ..timeCommitment = ''
+      ..additionalNotes = '';
+    _suggestions = [];
+    _errorMessage = null;
+    _isLoading = false;
+    notifyListeners();
   }
 }
