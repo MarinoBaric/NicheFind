@@ -69,6 +69,6 @@ class _ConnectivityBannerState extends State<ConnectivityBanner> {
           ),
           Expanded(child: widget.child)
       ],
-    )
+    );
   }
 }
