@@ -13,13 +13,17 @@ class QuestionnaireData {
     this.additionalNotes = '',
   });
 
-  bool get isComplete {
-    // TODO: Validate that all required fields are filled
-    throw UnimplementedError();
-  }
+  bool get isComplete =>
+      interests.isNotEmpty &&
+      goal.isNotEmpty &&
+      skillLevel.isNotEmpty &&
+      timeCommitment.isNotEmpty;
 
-  Map<String, dynamic> toJson() {
-    // TODO: Serialize questionnaire data for prompt building
-    throw UnimplementedError();
-  }
+  Map<String, dynamic> toJson() => {
+        'interests': interests,
+        'goal': goal,
+        'skillLevel': skillLevel,
+        'timeCommitment': timeCommitment,
+        'additionalNotes': additionalNotes,
+      };
 }
