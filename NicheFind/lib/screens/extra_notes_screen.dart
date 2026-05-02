@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/questionnaire_provider.dart';
-import 'loading_screen.dart';
 import 'results_screen.dart';
 
 class ExtraNotesScreen extends StatefulWidget {
@@ -134,15 +133,10 @@ class _ExtraNotesScreenState extends State<ExtraNotesScreen> {
     provider.setAdditionalNotes(_controller.text.trim());
 
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const LoadingScreen()),
+      MaterialPageRoute(builder: (_) => const ResultsScreen()),
     );
 
     await provider.generateNiches();
-    if (!context.mounted) return;
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const ResultsScreen()),
-    );
   }
 }
 

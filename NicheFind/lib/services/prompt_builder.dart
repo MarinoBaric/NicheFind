@@ -1,3 +1,4 @@
+import '../models/niche_suggestion.dart';
 import '../models/questionnaire_data.dart';
 
 class PromptBuilder {
@@ -51,5 +52,21 @@ Return JSON only, matching the schema in the system message.
   String buildRefinementPrompt(String userFeedback) {
     return 'Refine the previous niches with this feedback: "$userFeedback". '
         'Keep the same JSON schema.';
+  }
+
+  String buildRegeneratePrompt(List<NicheSuggestion> previousResults) {
+    if (previousResults.isEmpty) {
+      return 'Provide a different set of niches than the obvious ones. '
+          'Vary the angles and combinations.';
+    }
+    final titles = previousResults.map((n) => '- ${n.title}').join('\n');
+    return '''
+Provide a brand-new set of niches. Do NOT repeat or rephrase any of these
+previously suggested titles:
+$titles
+
+Pick different audiences, formats, or sub-topics.
+Keep the same JSON schema.
+''';
   }
 }
